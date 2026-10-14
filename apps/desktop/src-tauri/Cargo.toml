@@ -1,0 +1,23 @@
+[package]
+name = "measura-desktop"
+description = "App desktop (Tauri): ponte entre a interface React e o núcleo Rust"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "measura_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+measura-model.workspace = true
+measura-engine.workspace = true
+tauri = "2"
+tauri-plugin-dialog = "2"
+
+[lints]
+workspace = true
+
+[build-dependencies]
+tauri-build = "2"

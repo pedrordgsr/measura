@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* Own visual identity: the workflow is familiar, the brand is not copied. */
+@theme {
+  --color-accent: #0f766e;
+  --color-accent-soft: #ccfbf1;
+  --color-chrome: #f3f4f6;
+  --color-pane: #fafafa;
+  --color-line: #e5e7eb;
+  --color-canvas: #eaeaea;
+  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #1f2937;
+  background: var(--color-chrome);
+  user-select: none;
+}

@@ -1,0 +1,22 @@
+# Rust
+/target/
+
+# Node
+node_modules/
+dist/
+
+# Tauri
+apps/desktop/src-tauri/gen/
+
+# Projetos abertos pelo app: dados carregados ficam fora do git
+.cache/
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cache do TypeScript
+*.tsbuildinfo

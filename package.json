@@ -1,0 +1,11 @@
+{
+  "name": "measura",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @measura/desktop tauri dev",
+    "build": "pnpm --filter @measura/desktop tauri build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  },
+  "packageManager": "pnpm@10.25.0"
+}
