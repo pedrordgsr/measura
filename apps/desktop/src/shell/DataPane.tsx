@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { isNumeric, type Column } from "../lib/model";
 import { useApp } from "../store";
 
-/** "Dados" pane: tables and their fields. Present in all three views, as in Power BI. */
+/** "Data" pane: tables and their fields. Present in all three views, as in Power BI. */
 export function DataPane() {
   const tables = useApp((s) => s.tables);
   const selected = useApp((s) => s.selectedTable);

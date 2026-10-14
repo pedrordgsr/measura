@@ -1,7 +1,7 @@
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { useApp } from "../store";
 
-// Placeholder layout: one card per table. Etapa 1 replaces this with React Flow + ELK
+// Placeholder layout: one card per table. Stage 1 replaces this with React Flow + ELK
 // (drag tables, draw relationships, properties pane).
 export function ModelView() {
   const tables = useApp((s) => s.tables);

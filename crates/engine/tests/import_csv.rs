@@ -12,7 +12,7 @@ fn fixture(name: &str) -> PathBuf {
 #[test]
 fn imports_csv_with_inferred_types() {
     let engine = Engine::in_memory().unwrap();
-    let table = engine.import_csv(&fixture("Vendas.csv"), "Vendas").unwrap();
+    let table = engine.import_csv(&fixture("Sales.csv"), "Sales").unwrap();
 
     let types: Vec<_> = table
         .columns
@@ -22,25 +22,25 @@ fn imports_csv_with_inferred_types() {
     assert_eq!(
         types,
         [
-            ("Data", DataType::DateTime),
-            ("ProdutoId", DataType::Int64),
-            ("Quantidade", DataType::Int64),
-            ("Valor", DataType::Double),
+            ("Date", DataType::DateTime),
+            ("ProductId", DataType::Int64),
+            ("Quantity", DataType::Int64),
+            ("Amount", DataType::Double),
         ]
     );
-    assert_eq!(engine.row_count("Vendas").unwrap(), 8);
+    assert_eq!(engine.row_count("Sales").unwrap(), 8);
 }
 
 #[test]
 fn reads_a_page_of_rows() {
     let engine = Engine::in_memory().unwrap();
     engine
-        .import_csv(&fixture("Produto.csv"), "Produto")
+        .import_csv(&fixture("Product.csv"), "Product")
         .unwrap();
 
-    let page = engine.rows("Produto", 1, 2).unwrap();
+    let page = engine.rows("Product", 1, 2).unwrap();
     assert_eq!(page.total_rows, 4);
     assert_eq!(page.rows.len(), 2);
     assert_eq!(page.rows[0][1], "Mouse");
-    assert_eq!(page.rows[0][2], "Acessórios");
+    assert_eq!(page.rows[0][2], "Accessories");
 }

@@ -1,4 +1,4 @@
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { useApp } from "../store";
 import { getDataFromCsv } from "../shell/getData";
 

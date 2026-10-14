@@ -1,8 +1,8 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { useApp } from "../store";
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 
-/** "Obter dados > Texto/CSV": pick a file and load it. */
+/** "Get data > Text/CSV": pick a file and load it. */
 export async function getDataFromCsv() {
   const path = await open({
     multiple: false,

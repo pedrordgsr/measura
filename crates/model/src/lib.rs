@@ -108,11 +108,11 @@ mod tests {
     fn table_lookup_is_case_insensitive() {
         let model = Model {
             tables: vec![Table {
-                name: "Vendas".into(),
+                name: "Sales".into(),
                 ..Default::default()
             }],
             ..Default::default()
         };
-        assert!(model.table("vendas").is_some());
+        assert!(model.table("sales").is_some());
     }
 }

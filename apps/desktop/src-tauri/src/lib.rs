@@ -13,7 +13,7 @@ pub struct AppState {
 
 #[allow(clippy::expect_used)] // nothing can run without the window or the engine
 pub fn run() {
-    let engine = Engine::in_memory().expect("falha ao iniciar o DuckDB");
+    let engine = Engine::in_memory().expect("failed to start DuckDB");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
@@ -25,5 +25,5 @@ pub fn run() {
             commands::table_rows
         ])
         .run(tauri::generate_context!())
-        .expect("falha ao iniciar o aplicativo");
+        .expect("failed to start the application");
 }

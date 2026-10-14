@@ -1,57 +1,59 @@
 # Roadmap
 
-As etapas são as de [ARQUITETURA.md §11](ARQUITETURA.md#11-execução-por-etapas). Aqui fica o detalhamento da etapa em andamento.
+The stages are those in [ARCHITECTURE.md §11](ARCHITECTURE.md#11-stages). This file details the stage in progress.
 
-**Etapa atual: 1. Base**
-
----
-
-## Etapa 1. Base
-
-**Critério de pronto:** importar planilhas, ver os dados, relacionar tabelas, salvar e reabrir.
-
-### Fundação
-- [x] Monorepo: workspace Cargo + workspace pnpm, `CLAUDE.md`
-- [x] `measura-model`: tipos do modelo (tabela, coluna, medida, relação) com nomes do TMDL
-- [x] `measura-engine`: DuckDB embutido, importar CSV, esquema com tipos TMDL, leitura paginada
-- [x] App Tauri: faixa de opções, barra das três exibições, painel Dados
-- [x] Exibição de tabela: grade paginada (Glide Data Grid) com formatação pt-BR
-- [ ] CI no GitHub Actions: testes, clippy e typecheck em Windows, macOS e Linux
-- [ ] Gerar `lib/model.ts` a partir dos tipos Rust (specta ou ts-rs)
-
-### Dados
-- [ ] Importar Excel (`.xlsx`): escolher planilhas/tabelas, como o Navegador do Power BI
-- [ ] Importar Parquet
-- [ ] Diálogo de pré-visualização do CSV antes de carregar (delimitador, codificação, primeira linha como cabeçalho)
-- [ ] Atualizar (recarregar da fonte)
-
-### Projeto
-- [ ] Escrever TMDL (`model.tmdl`, `tables/*.tmdl`, `relationships.tmdl`) a partir do `measura-model`
-- [ ] Ler TMDL para o `measura-model` (testes de ida e volta)
-- [ ] Estrutura PBIP completa (`.pbip`, `.SemanticModel/`, `.Report/`) e cache `.duckdb` em `.cache/`
-- [ ] Arquivo: Novo, Abrir, Salvar, Salvar como; aviso de alterações não salvas
-
-### Exibição de modelo
-- [ ] Diagrama com React Flow + ELK: tabelas arrastáveis, posições salvas no projeto
-- [ ] Criar relação arrastando uma coluna até outra
-- [ ] Editar relação: cardinalidade, direção do filtro cruzado, ativa ou inativa
-- [ ] Detecção automática de relações ao carregar (mesmo nome + unicidade no lado 1)
-- [ ] Painel Propriedades: renomear, tipo de dados, formato, ocultar, classificar por coluna
-
-### Exibição de tabela
-- [ ] Ordenar e filtrar pelo cabeçalho da coluna (só visualização, como no Power BI)
-- [ ] Selecionar coluna ao clicar no painel Dados
+**Current stage: 1. Foundation**
 
 ---
 
-## Próximas etapas (resumo)
+## Stage 1. Foundation
 
-| Etapa | Entrega |
+**Done when:** you can import spreadsheets, see the data, relate tables, save and reopen.
+
+### Groundwork
+- [x] Monorepo: Cargo workspace + pnpm workspace, `CLAUDE.md`
+- [x] `measura-model`: model types (table, column, measure, relationship) with TMDL names
+- [x] `measura-engine`: embedded DuckDB, CSV import, schema with TMDL types, paged reads
+- [x] Tauri app: ribbon, three-view rail, Data pane
+- [x] Table view: paged grid (Glide Data Grid) with locale-aware formatting
+- [x] UI in English (default) and Brazilian Portuguese
+- [ ] Verify the desktop app builds and runs (`cargo clippy` on the whole workspace, `pnpm dev`)
+- [ ] GitHub Actions CI: tests, clippy and typecheck on Windows, macOS and Linux
+- [ ] Generate `lib/model.ts` from the Rust types (specta or ts-rs)
+
+### Data
+- [ ] Import Excel (`.xlsx`): pick sheets/tables, like Power BI's Navigator
+- [ ] Import Parquet
+- [ ] CSV preview dialog before loading (delimiter, encoding, first row as headers)
+- [ ] Refresh (reload from source)
+
+### Project
+- [ ] Write TMDL (`model.tmdl`, `tables/*.tmdl`, `relationships.tmdl`) from `measura-model`
+- [ ] Read TMDL into `measura-model` (round-trip tests)
+- [ ] Full PBIP layout (`.pbip`, `.SemanticModel/`, `.Report/`) and `.duckdb` cache in `.cache/`
+- [ ] File: New, Open, Save, Save as; unsaved changes warning
+
+### Model view
+- [ ] Diagram with React Flow + ELK: draggable tables, positions saved in the project
+- [ ] Create a relationship by dragging one column onto another
+- [ ] Edit relationship: cardinality, cross-filter direction, active or inactive
+- [ ] Relationship autodetection on load (same name + uniqueness on the one side)
+- [ ] Properties pane: rename, data type, format, hide, sort by column
+
+### Table view
+- [ ] Sort and filter from the column header (view only, as in Power BI)
+- [ ] Select a column when clicking it in the Data pane
+
+---
+
+## Next stages (summary)
+
+| Stage | Delivers |
 |---|---|
-| 2. Relatórios | Canvas, painéis Visualizações/Filtros, visuais principais, segmentadores, filtragem cruzada |
-| 3. DAX essencial | Motor DAX com as funções da fase essencial, barra de fórmulas, suíte de conformidade |
-| 4. Power Query | Motor M, editor com Etapas Aplicadas e Editor Avançado |
-| 5. DAX do dia a dia | Iteradores, transição de contexto, colunas calculadas, inteligência de tempo |
-| 6. Abrir PBIP | Ler projetos do Power BI (TMDL + PBIR), temas |
-| 7. Publicar | Site estático com DuckDB-WASM |
-| 8. Servidor | Docker, workspaces, atualização agendada, RLS |
+| 2. Reports | Canvas, Visualizations/Filters panes, core visuals, slicers, cross-filtering |
+| 3. Essential DAX | DAX engine with the essential functions, formula bar, conformance suite |
+| 4. Power Query | M engine, editor with Applied Steps and Advanced Editor |
+| 5. Everyday DAX | Iterators, context transition, calculated columns, time intelligence |
+| 6. Open PBIP | Read Power BI projects (TMDL + PBIR), themes |
+| 7. Publish | Static site with DuckDB-WASM |
+| 8. Server | Docker, workspaces, scheduled refresh, RLS |

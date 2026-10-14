@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { getDataFromCsv } from "./getData";
 
 const tabs = [t.ribbon.home, t.ribbon.insert, t.ribbon.modeling, t.ribbon.view, t.ribbon.help];

@@ -3,12 +3,12 @@ import { DataEditor, GridCellKind, type GridCell, type GridColumn, type Item } f
 import { ipc } from "../lib/ipc";
 import { formatCell } from "../lib/format";
 import { isNumeric, type CellValue, type Column } from "../lib/model";
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { useApp } from "../store";
 
 const PAGE_SIZE = 500;
 
-/** "Exibição de tabela": read-only grid of the selected table, loaded page by page. */
+/** "Table view": read-only grid of the selected table, loaded page by page. */
 export function TableView() {
   const tableName = useApp((s) => s.selectedTable);
   if (!tableName) {

@@ -1,27 +1,29 @@
 # Measura
 
-Um clone de código aberto do Power BI Desktop: mesmo Power Query, mesmo DAX, mesmas telas, em Windows, macOS e Linux.
+An open-source clone of Power BI Desktop: same Power Query, same DAX, same screens, on Windows, macOS and Linux.
 
-> Em desenvolvimento inicial. Veja o [roadmap](docs/ROADMAP.md).
+> Early development. See the [roadmap](docs/ROADMAP.md).
 
-## Rodando
+## Running
 
-Pré-requisitos: Rust (stable), Node 20+, pnpm 10 e as [dependências do Tauri](https://v2.tauri.app/start/prerequisites/) para o seu sistema.
+Prerequisites: Rust (stable), Node 20+, pnpm 10 and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your system.
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-A primeira compilação demora alguns minutos, porque o DuckDB é compilado junto.
+The first build takes a few minutes because DuckDB is compiled from source.
 
-## Documentação
+## Documentation
 
-- [Apresentação](docs/APRESENTACAO.md): o problema e a proposta
-- [Arquitetura](docs/ARQUITETURA.md): como é construído
-- [Roadmap](docs/ROADMAP.md): onde estamos
-- [Compatibilidade](docs/compatibilidade.md): o que já funciona igual ao Power BI
+- [Overview](docs/OVERVIEW.md): the problem and the proposal
+- [Architecture](docs/ARCHITECTURE.md): how it is built
+- [Roadmap](docs/ROADMAP.md): where we are
+- [Compatibility](docs/COMPATIBILITY.md): what already works the same as in Power BI
 
-## Licença
+## License
 
-Apache-2.0
+[Apache-2.0](LICENSE)
+
+Measura is an independent project, not affiliated with or endorsed by Microsoft. Power BI is a trademark of Microsoft Corporation.

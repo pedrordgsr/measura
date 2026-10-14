@@ -15,11 +15,11 @@ pub use sql::quote_ident;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("erro no DuckDB: {0}")]
+    #[error("DuckDB error: {0}")]
     DuckDb(#[from] duckdb::Error),
-    #[error("tabela não encontrada: {0}")]
+    #[error("table not found: {0}")]
     TableNotFound(String),
-    #[error("caminho inválido: {0}")]
+    #[error("invalid path: {0}")]
     InvalidPath(String),
 }
 
@@ -132,11 +132,11 @@ impl Engine {
     }
 }
 
-/// Table name derived from a file name, as Power BI does (`vendas 2025.csv` → `vendas 2025`).
+/// Table name derived from a file name, as Power BI does (`sales 2025.csv` → `sales 2025`).
 pub fn table_name_from_path(path: &Path) -> String {
     path.file_stem()
         .map(|s| s.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "Tabela".into())
+        .unwrap_or_else(|| "Table".into())
 }
 
 #[cfg(test)]
@@ -146,7 +146,7 @@ mod tests {
     #[test]
     fn table_name_comes_from_file_stem() {
         assert_eq!(
-            table_name_from_path(Path::new("/x/vendas 2025.csv")),
+            table_name_from_path(Path::new("/x/sales 2025.csv")),
             "vendas 2025"
         );
     }
@@ -154,6 +154,6 @@ mod tests {
     #[test]
     fn unknown_table_is_an_error() {
         let engine = Engine::in_memory().unwrap();
-        assert!(matches!(engine.table("Nada"), Err(Error::TableNotFound(_))));
+        assert!(matches!(engine.table("Missing"), Err(Error::TableNotFound(_))));
     }
 }

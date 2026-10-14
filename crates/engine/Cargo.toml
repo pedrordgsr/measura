@@ -1,6 +1,6 @@
 [package]
 name = "measura-engine"
-description = "Motor de armazenamento: execução no DuckDB (papel do VertiPaq)"
+description = "Storage engine: DuckDB execution (the role of VertiPaq)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

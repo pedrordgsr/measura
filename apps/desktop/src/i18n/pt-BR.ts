@@ -1,7 +1,8 @@
-// UI terminology. Use the same words as Power BI Desktop in pt-BR, so users find things where
-// they expect. Never use Microsoft brand names here.
+// UI strings, Brazilian Portuguese. Use the same words as Power BI Desktop's pt-BR UI.
 
-export const t = {
+import type { Strings } from "./en";
+
+export const ptBR: Strings = {
   appName: "Measura",
   ribbon: {
     home: "Página Inicial",
@@ -39,4 +40,11 @@ export const t = {
     title: "Adicionar dados ao relatório",
     subtitle: "Depois de carregados, os dados aparecerão no painel Dados.",
   },
-} as const;
+  values: {
+    true: "Verdadeiro",
+    false: "Falso",
+  },
+  common: {
+    close: "Fechar",
+  },
+};

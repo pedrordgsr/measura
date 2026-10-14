@@ -1,6 +1,6 @@
 [package]
 name = "measura-model"
-description = "Modelo semântico (tabelas, colunas, medidas, relações) e leitura/escrita de TMDL"
+description = "Semantic model (tables, columns, measures, relationships) and TMDL read/write"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

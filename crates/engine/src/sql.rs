@@ -65,7 +65,7 @@ mod tests {
     #[test]
     fn identifiers_and_literals_are_escaped() {
         assert_eq!(quote_ident(r#"a"b"#), r#""a""b""#);
-        assert_eq!(quote_literal("d'água"), "'d''água'");
+        assert_eq!(quote_literal("O'Brien"), "'O''Brien'");
     }
 
     #[test]

@@ -1,4 +1,4 @@
-import { t } from "../lib/strings";
+import { t } from "../i18n";
 import { useApp, type View } from "../store";
 
 const views: { id: View; label: string; icon: React.ReactNode }[] = [

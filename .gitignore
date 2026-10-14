@@ -8,15 +8,15 @@ dist/
 # Tauri
 apps/desktop/src-tauri/gen/
 
-# Projetos abertos pelo app: dados carregados ficam fora do git
+# Data loaded by open projects stays out of git
 .cache/
 
-# Editor / SO
+# Editor / OS
 .vscode/*
 !.vscode/extensions.json
 .idea/
 .DS_Store
 Thumbs.db
 
-# Cache do TypeScript
+# TypeScript build cache
 *.tsbuildinfo

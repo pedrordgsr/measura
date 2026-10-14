@@ -1,6 +1,6 @@
 [package]
 name = "measura-desktop"
-description = "App desktop (Tauri): ponte entre a interface React e o núcleo Rust"
+description = "Desktop app (Tauri): bridge between the React UI and the Rust core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

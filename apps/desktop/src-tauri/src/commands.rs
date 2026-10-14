@@ -1,7 +1,7 @@
 //! Tauri commands. Each one is mirrored in `apps/desktop/src/lib/ipc.ts`.
 //!
 //! Commands are `async` so they run off the main thread and never freeze the window.
-//! Errors cross the boundary as user-facing strings (already in Portuguese).
+//! Errors cross the boundary as user-facing strings.
 
 use std::path::PathBuf;
 
@@ -19,7 +19,7 @@ fn engine(
     state
         .engine
         .lock()
-        .map_err(|_| "o motor de dados está indisponível".to_owned())
+        .map_err(|_| "the data engine is unavailable".to_owned())
 }
 
 #[tauri::command]

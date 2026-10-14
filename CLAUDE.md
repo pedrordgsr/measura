@@ -1,112 +1,113 @@
 # CLAUDE.md
 
-Clone de código aberto do **Power BI Desktop**, para Windows, macOS e Linux. O público é quem já usa o Power BI: tudo deve funcionar e estar onde essa pessoa espera. **Não há camada de IA no produto.** A versão com IA foi descartada (`docs/descartado/`), então não use nada de lá.
+**Measura** is an open-source clone of **Power BI Desktop** for Windows, macOS and Linux. The audience is people who already use Power BI: everything must work, and be located, where they expect it. **There is no AI layer in the product.**
 
-- O quê e por quê: [docs/APRESENTACAO.md](docs/APRESENTACAO.md)
-- Como (arquitetura completa): [docs/ARQUITETURA.md](docs/ARQUITETURA.md)
-- Onde estamos: [docs/ROADMAP.md](docs/ROADMAP.md)
-- O que já é suportado: [docs/compatibilidade.md](docs/compatibilidade.md)
+- What and why: [docs/OVERVIEW.md](docs/OVERVIEW.md)
+- How (full architecture): [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Where we are: [docs/ROADMAP.md](docs/ROADMAP.md)
+- What is supported: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)
 
-O nome do projeto é **Measura** (crates `measura-*`, pacotes `@measura/*`, identificador `org.measura.desktop`).
+Naming: crates `measura-*`, packages `@measura/*`, app identifier `org.measura.desktop`.
+
+**Language:** the repository is in **English**: code, comments, docs, commit messages, error messages, test data. The maintainer is Brazilian: talk to them in **Brazilian Portuguese** in chat.
 
 ---
 
-## Regra de ouro: o Power BI é a especificação
+## Golden rule: Power BI is the spec
 
-O objetivo é **dar o mesmo resultado que o Power BI**, não algo parecido.
+The goal is to **produce the same result as Power BI**, not something similar.
 
-- Antes de implementar uma função DAX/M ou um comportamento de visual, confira o comportamento real em [dax.guide](https://dax.guide), na documentação da Microsoft (learn.microsoft.com) ou em *The Definitive Guide to DAX* (SQLBI). Cite a referência no teste.
-- **Nunca invente semântica.** Se a documentação não deixar claro (ordem de avaliação, BLANK, tipo do resultado, totais), escreva o teste com o caso duvidoso marcado como `#[ignore = "confirmar no Power BI: ..."]` e avise o usuário. Não chute.
-- Quando o Power BI faz algo "estranho" (BLANK = 0 é verdadeiro, total da matriz não é a soma das linhas, linha em branco virtual), **copie o estranho**. Quem vem do Power BI depende disso.
-- Implemente a partir da documentação pública. Não faça engenharia reversa de binários da Microsoft.
+- Before implementing a DAX/M function or a visual behavior, check the real behavior in [dax.guide](https://dax.guide), Microsoft's documentation (learn.microsoft.com) or *The Definitive Guide to DAX* (SQLBI). Cite the reference in the test.
+- **Never invent semantics.** If the documentation is unclear (evaluation order, BLANK, result type, totals), write the test with the doubtful case marked `#[ignore = "confirm in Power BI: ..."]` and tell the user. Do not guess.
+- When Power BI does something "weird" (BLANK = 0 is true, matrix total is not the sum of the rows, virtual blank row), **copy the weirdness**. Power BI users depend on it.
+- Implement from public documentation. No reverse engineering of Microsoft binaries.
 
-## Invariantes de arquitetura
+## Architecture invariants
 
-Não quebre estas regras sem discutir com o usuário antes:
+Do not break these without discussing with the user first:
 
-1. **Núcleo em Rust, sem interface.** A lógica fica em `crates/`. O `apps/desktop/src-tauri` é uma casca fina, porque o mesmo núcleo vai rodar no servidor (etapa 8) e no navegador via WASM (etapa 7). Nada de `tauri` dentro de `crates/`.
-2. **A interface gera DAX e M, nunca SQL.** Só o `measura-engine` (e, depois, os compiladores de `dax`/`mquery`) escreve SQL. Identificadores e literais passam sempre por `quote_ident`/`quote_literal`. Nunca interpole entrada do usuário direto no SQL.
-3. **Todo visual é uma consulta no formato `SUMMARIZECOLUMNS`:** colunas de agrupamento, filtros e medidas, onde a agregação implícita equivale a uma medida implícita. Na etapa 2, antes de existir o motor DAX, os visuais já devem montar uma estrutura tipada equivalente a isso (não SQL ad hoc). Na etapa 3, o motor DAX passa a compilar essa mesma estrutura.
-4. **O formato do projeto é PBIP/TMDL/PBIR.** Não invente um formato próprio. Os dados carregados ficam em `.cache/` (um `.duckdb`), fora do git.
-5. **Os nomes do modelo seguem o TMDL** (`dataType: int64`, `crossFilteringBehavior: bothDirections`...). O `measura-model` mapeia o TMDL 1:1.
-6. **Semântica do DAX desde o primeiro dia:** BLANK não é NULL do SQL, auto-exist, linha em branco virtual e totais avaliados no contexto do total. Ver ARQUITETURA §5.1.
+1. **Headless Rust core.** Logic lives in `crates/`. `apps/desktop/src-tauri` is a thin shell, because the same core will run on the server (stage 8) and in the browser via WASM (stage 7). No `tauri` inside `crates/`.
+2. **The UI generates DAX and M, never SQL.** Only `measura-engine` (and later the `dax`/`mquery` compilers) writes SQL. Identifiers and literals always go through `quote_ident`/`quote_literal`. Never interpolate user input into SQL.
+3. **Every visual is a `SUMMARIZECOLUMNS`-shaped query:** group-by columns, filters and measures, where implicit aggregation is an implicit measure. In stage 2, before the DAX engine exists, visuals must already build a typed structure equivalent to that (not ad-hoc SQL). In stage 3 the DAX engine compiles that same structure.
+4. **The project format is PBIP/TMDL/PBIR.** Do not invent a format. Loaded data lives in `.cache/` (a `.duckdb` file), outside git.
+5. **Model names follow TMDL** (`dataType: int64`, `crossFilteringBehavior: bothDirections`...). `measura-model` maps TMDL 1:1.
+6. **DAX semantics from day one:** BLANK is not SQL NULL, auto-exist, virtual blank row, totals evaluated in the total's context. See ARCHITECTURE §5.1.
 
-## Estrutura
+## Layout
 
 ```
 crates/
-  model/            measura-model    tipos do modelo semântico (Table, Column, Measure, Relationship); TMDL
-  engine/           measura-engine   DuckDB: importação, esquema, leitura paginada. Único lugar com SQL hoje
+  model/            measura-model    semantic model types (Table, Column, Measure, Relationship); TMDL
+  engine/           measura-engine   DuckDB: import, schema, paged reads. The only place with SQL today
 apps/desktop/
-  src/              React: shell/ (faixa de opções, barra de exibições, painéis), views/ (as 3 exibições), lib/
-  src-tauri/        measura-desktop  comandos Tauri finos sobre os crates
-tests/fixtures/     dados de exemplo usados nos testes (Vendas.csv, Produto.csv)
-docs/               apresentação, arquitetura, roadmap, compatibilidade
+  src/              React: shell/ (ribbon, view rail, panes), views/ (the 3 views), lib/, i18n/
+  src-tauri/        measura-desktop  thin Tauri commands over the crates
+tests/fixtures/     sample data used by tests (Sales.csv, Product.csv)
+docs/               overview, architecture, roadmap, compatibility
 ```
 
-Crates e pacotes **planejados**: crie cada um quando a etapa dele começar, e não antes.
+**Planned** crates and packages: create each one when its stage starts, not before.
 
-| Quando | O quê |
+| When | What |
 |---|---|
-| Etapa 2 | `crates/report` (PBIR, consultas dos visuais), `packages/visuals` (ECharts) |
-| Etapa 3 | `crates/dax` (lexer, parser, plano, compilador SQL, avaliador), `packages/editors` (Monaco), `tests/dax-conformance/` |
-| Etapa 4 | `crates/mquery` (parser M, `Table.*` → SQL, interpretador), `tests/m-conformance/` |
-| Etapa 7 | `crates/wasm`, `apps/web` |
-| Etapa 8 | `crates/server` |
+| Stage 2 | `crates/report` (PBIR, visual queries), `packages/visuals` (ECharts) |
+| Stage 3 | `crates/dax` (lexer, parser, plan, SQL compiler, evaluator), `packages/editors` (Monaco), `tests/dax-conformance/` |
+| Stage 4 | `crates/mquery` (M parser, `Table.*` → SQL, interpreter), `tests/m-conformance/` |
+| Stage 7 | `crates/wasm`, `apps/web` |
+| Stage 8 | `crates/server` |
 
-Quando o mesmo código React for usado pelo desktop e pelo `apps/web`, mova-o para `packages/ui`.
+When the same React code is needed by both desktop and `apps/web`, move it to `packages/ui`.
 
-## Comandos
+## Commands
 
 ```sh
-pnpm install                       # dependências JS (raiz do repo)
-pnpm dev                           # abre o app desktop (Vite + Tauri) em modo dev
-cargo test --workspace             # testes Rust
+pnpm install                       # JS dependencies (repo root)
+pnpm dev                           # run the desktop app (Vite + Tauri) in dev mode
+cargo test --workspace             # Rust tests
 cargo clippy --workspace --all-targets -- -D warnings
 cargo fmt --all
-pnpm typecheck                     # tsc em todos os pacotes
+pnpm typecheck                     # tsc in every package
 pnpm test                          # vitest
 ```
 
-- A **primeira** compilação demora vários minutos, porque o DuckDB é compilado do código-fonte em C++ (feature `bundled`). Depois fica em cache em `target/`. Ao rodar em background, espere terminar, sem polling.
-- No Windows é preciso MSVC (Build Tools do VS 2022) e WebView2. Ambos já estão instalados nesta máquina.
+- The **first** build takes several minutes: DuckDB is compiled from C++ source (`bundled` feature). It is then cached in `target/`. When running it in the background, wait for completion instead of polling.
+- On Windows you need MSVC (VS 2022 Build Tools) and WebView2.
 
-**Antes de dizer que algo está pronto:** `cargo test --workspace`, `cargo clippy ... -D warnings`, `pnpm typecheck` e `pnpm test` devem passar. Se a mudança for visual, rode `pnpm dev` e confira na janela, ou diga explicitamente que não conferiu.
+**Before saying something is done:** `cargo test --workspace`, `cargo clippy ... -D warnings`, `pnpm typecheck` and `pnpm test` must pass. For visual changes, run `pnpm dev` and check the window, or say explicitly that you did not.
 
-## Convenções
-
-**Idioma:** código, identificadores e comentários em inglês. Textos da interface, mensagens de erro mostradas ao usuário e documentação em **pt-BR**.
+## Conventions
 
 **Rust**
-- Um `Error` por crate com `thiserror`, mensagens em pt-BR. Sem `unwrap`/`expect` fora de testes (o clippy avisa). Se for inevitável, use `#[allow]` com o motivo.
-- `unsafe` é proibido no workspace.
-- Dependências compartilhadas ficam em `[workspace.dependencies]`, e o crate usa `dep.workspace = true`.
-- Os tipos que cruzam para o frontend usam `#[serde(rename_all = "camelCase")]`.
-- Os testes de integração ficam em `crates/<x>/tests/` e usam `tests/fixtures/`.
+- One `Error` per crate with `thiserror`. No `unwrap`/`expect` outside tests (clippy warns). If unavoidable, `#[allow]` with the reason.
+- `unsafe` is forbidden in the workspace.
+- Shared dependencies go in `[workspace.dependencies]`; crates use `dep.workspace = true`.
+- Types that cross to the frontend use `#[serde(rename_all = "camelCase")]`.
+- Integration tests live in `crates/<x>/tests/` and use `tests/fixtures/`.
 
 **Frontend (apps/desktop/src)**
-- TypeScript estrito, com `noUncheckedIndexedAccess`.
-- `lib/ipc.ts` é o **único** lugar que chama `invoke`. Cada comando lá corresponde a um em `src-tauri/src/commands.rs`, com o mesmo nome.
-- `lib/model.ts` espelha os tipos Rust à mão. Ao mudar um struct serializado em Rust, atualize esse arquivo no mesmo commit. A geração automática (specta/ts-rs) está no roadmap.
-- **Toda string visível vai em `lib/strings.ts`**, com a terminologia do Power BI Desktop em pt-BR ("Obter dados", "Exibição de tabela", "Poços de campos", "Dicas de ferramenta"...). Na dúvida, use o termo que o Power BI usa.
-- Estado global no Zustand (`store.ts`). Estado local de componente com `useState`.
-- Estilo com Tailwind v4. Os tokens de cor ficam em `index.css` (`@theme`).
-- Números e datas são exibidos em pt-BR (`lib/format.ts`).
-- Os comandos Tauri são `async`, porque um comando síncrono roda na thread principal e congela a janela.
+- Strict TypeScript, with `noUncheckedIndexedAccess`.
+- `lib/ipc.ts` is the **only** place that calls `invoke`. Each command there matches one in `src-tauri/src/commands.rs`, with the same name.
+- `lib/model.ts` mirrors the Rust types by hand. When a serialized Rust struct changes, update it in the same commit. Code generation (specta/ts-rs) is on the roadmap.
+- **Every visible string goes through `i18n/`.** `en.ts` is the source of truth; `pt-BR.ts` must have the same keys (the type checker enforces it). Use Power BI Desktop's official terms in each language ("Get data", "Table view", "Field wells" / "Obter dados", "Exibição de tabela", "Poços de campos"). When in doubt, use the term Power BI uses.
+- Numbers and dates are formatted with the active locale (`lib/format.ts`).
+- Global state in Zustand (`store.ts`). Local component state with `useState`.
+- Styling with Tailwind v4. Color tokens live in `index.css` (`@theme`).
+- Tauri commands are `async`: a sync command runs on the main thread and freezes the window.
 
-**Marca:** o fluxo de trabalho é idêntico ao do Power BI, mas nome, logo, ícones e cores são próprios (acento verde-azulado `#0f766e`, não o amarelo da Microsoft). Não use "Power BI" na interface. Na documentação, pode citar como referência.
+**Branding:** the workflow is identical to Power BI, but the name, logo, icons and colors are our own (teal accent `#0f766e`, not Microsoft yellow). Never use "Power BI" in the UI. Docs may cite it as a reference.
 
-## Dependências com versão travada (e por quê)
+## Pinned dependencies (and why)
 
-- **React 18** (não 19): o Glide Data Grid 6 exige React ≤ 18 nas peer deps. Revise quando o Glide suportar 19.
-- **marked 4**: peer dep do Glide Data Grid.
-- **duckdb 1.4 `bundled`**: compila o DuckDB junto, sem precisar de biblioteca instalada no sistema.
+- **React 18** (not 19): Glide Data Grid 6 requires React ≤ 18 in its peer deps. Revisit when Glide supports 19.
+- **marked 4**: Glide Data Grid peer dependency.
+- **duckdb 1.4 `bundled`**: compiles DuckDB in, no system library needed.
 
-Ao adicionar uma dependência, use `cargo add` ou `pnpm add` (versão atual), não uma versão de memória.
+When adding a dependency, use `cargo add` or `pnpm add` (current version), never a version from memory.
 
-## Fluxo de trabalho
+## Workflow
 
-- Siga a ordem das etapas do [ROADMAP](docs/ROADMAP.md). Não adiante uma etapa futura (por exemplo, motor DAX durante a etapa 1) sem o usuário pedir.
-- Ao terminar um item, marque no `docs/ROADMAP.md`. Ao implementar uma função DAX/M ou um visual, atualize `docs/compatibilidade.md`.
-- Toda função DAX nova vem com testes: casos normais, BLANK, contexto de filtro vazio e o caso citado na referência.
-- Mudanças pequenas e verificáveis. Se uma decisão contradiz a `ARQUITETURA.md`, pare e pergunte, ou atualize o documento junto, com o motivo.
+- Follow the stage order in the [ROADMAP](docs/ROADMAP.md). Do not jump ahead to a future stage (e.g. the DAX engine during stage 1) unless the user asks.
+- When an item is finished, tick it in `docs/ROADMAP.md`. When implementing a DAX/M function or a visual, update `docs/COMPATIBILITY.md`.
+- Every new DAX function comes with tests: normal cases, BLANK, empty filter context, and the case cited in the reference.
+- Small, verifiable changes. If a decision contradicts `ARCHITECTURE.md`, stop and ask, or update the document in the same change with the reason.
+- Commit messages in English, imperative mood.

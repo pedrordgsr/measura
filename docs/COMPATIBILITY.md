@@ -1,22 +1,22 @@
-# Matriz de compatibilidade
+# Compatibility matrix
 
-O que já funciona igual ao Power BI. Atualize a cada função ou recurso implementado.
+What already works the same as in Power BI. Update it with every function or feature implemented.
 
-**Legenda:** ✅ igual ao Power BI (com testes de conformidade) · 🟡 parcial (ver nota) · ❌ ainda não
+**Legend:** ✅ same as Power BI (with conformance tests) · 🟡 partial (see note) · ❌ not yet
 
-## Fontes de dados
+## Data sources
 
-| Fonte | Status | Nota |
+| Source | Status | Note |
 |---|---|---|
-| Texto/CSV | 🟡 | Delimitador e tipos detectados automaticamente; sem diálogo de opções |
+| Text/CSV | 🟡 | Delimiter and types detected automatically; no options dialog |
 | Excel | ❌ | |
 | Parquet | ❌ | |
-| Pasta | ❌ | |
+| Folder | ❌ | |
 | SQL Server / PostgreSQL | ❌ | |
 
-## DAX: fase essencial (etapa 3)
+## DAX: essential phase (stage 3)
 
-| Função | Status | Nota |
+| Function | Status | Note |
 |---|---|---|
 | `SUM`, `AVERAGE`, `MIN`, `MAX` | ❌ | |
 | `COUNT`, `COUNTA`, `COUNTROWS`, `DISTINCTCOUNT` | ❌ | |
@@ -27,11 +27,11 @@ O que já funciona igual ao Power BI. Atualize a cada função ou recurso implem
 | `IF`, `SWITCH`, `AND`, `OR`, `NOT` | ❌ | |
 | `BLANK`, `ISBLANK` | ❌ | |
 | `VAR` / `RETURN` | ❌ | |
-| Operadores (`+ - * / ^ & = <> < > <= >= && \|\| IN`) | ❌ | |
+| Operators (`+ - * / ^ & = <> < > <= >= && \|\| IN`) | ❌ | |
 
-## Power Query (M): v1 (etapa 4)
+## Power Query (M): v1 (stage 4)
 
-| Função | Status | Nota |
+| Function | Status | Note |
 |---|---|---|
 | `Csv.Document`, `Excel.Workbook`, `Parquet.Document` | ❌ | |
 | `Table.PromoteHeaders`, `Table.TransformColumnTypes` | ❌ | |
@@ -39,13 +39,13 @@ O que já funciona igual ao Power BI. Atualize a cada função ou recurso implem
 | `Table.RenameColumns`, `Table.ReorderColumns`, `Table.Sort` | ❌ | |
 | `Table.Distinct`, `Table.FirstN`, `Table.AddColumn`, `Table.ReplaceValue` | ❌ | |
 
-## Visuais (etapa 2)
+## Visuals (stage 2)
 
-| Visual | Status | Nota |
+| Visual | Status | Note |
 |---|---|---|
-| Tabela, Matriz | ❌ | |
-| Cartão | ❌ | |
-| Colunas / Barras (clusterizado, empilhado) | ❌ | |
-| Linhas | ❌ | |
-| Pizza | ❌ | |
-| Segmentador | ❌ | |
+| Table, Matrix | ❌ | |
+| Card | ❌ | |
+| Column / Bar (clustered, stacked) | ❌ | |
+| Line | ❌ | |
+| Pie | ❌ | |
+| Slicer | ❌ | |
